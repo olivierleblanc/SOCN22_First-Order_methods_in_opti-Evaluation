@@ -1,0 +1,275 @@
+%& -job-name=Beck_Evaluation
+\documentclass[10pt]{article}
+
+% \usepackage{cite}
+
+\usepackage{pythonhighlight}
+
+%%%%% Text %%%%%
+\usepackage[utf8]{inputenc} % Encode accents
+% \usepackage[english]{babel}
+\usepackage{textcomp} %supports the Text Companion fonts, which provide many text symbols (such as baht, bullet, copyright, musicalnote, onequarter, section, and yen), in the TS1 encoding.
+\usepackage{xspace}
+\usepackage[normalem]{ulem} % underlining that can stretch between words and be broken across lines
+
+%%%%% Figures, tables and drawings %%%%%
+\usepackage{pgfplots}
+\usepackage{float} % For objects that won't fit into the page, such as figures and tables
+\usepackage[footnotesize]{caption}
+% \usepackage{subcaption}
+\usepackage{subfig}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs} % Nice tables
+\usepackage{circuitikz}
+\usetikzlibrary{external}
+\tikzexternalize % activate!
+\captionsetup[figure]{font=footnotesize,labelfont=footnotesize}
+\captionsetup[table]{skip=1pt}
+
+% \pgfplotsset{compat=newest}
+% \pgfplotsset{plot coordinates/math parser=false}
+
+%%%%% Maths %%%%
+\usepackage{amsmath, amsbsy, amssymb, amsthm, amsfonts} 
+\usepackage{mathtools} % for norm command, floor, veil...
+\usepackage{mathrsfs}
+\usepackage{multirow}
+\usepackage{gensymb} % Provides \degree, \celsius, \perthousand, \micro and \ohm
+\usepackage{cancel} % Cancel term in equation.
+% \usepackage{empheq} % Boxed equations
+% \usepackage{chemist}
+% \usepackage[squaren,Gray]{SIunits}
+% \usepackage{siunitx}
+
+% Put black square at the end of proofs.
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{remark}{Remark}
+\newtheorem{assumption}{Assumption}
+
+% % %%%%% Algorithms %%%%%
+% % \usepackage{algorithmic}
+% % \usepackage{algorithm}
+% % \usepackage[ruled,vlined,linesnumbered,ruled,lined,boxed,commentsnumbered]{algorithm2e} 
+% % \usepackage{comment}
+% % \SetKwComment{Comment}{$\triangleright$\ }{}
+% % \usepackage{sidecap}
+% % \sidecaptionvpos{figure}{c}
+% % %%% Code to be able to remove algorithm numbering
+% % \makeatletter
+% % \newcommand{\RemoveAlgoNumber}{\renewcommand{\fnum@algocf}{\AlCapSty{\AlCapFnt\algorithmcfname}}}
+% % \newcommand{\RevertAlgoNumber}{\algocf@resetfnum}
+% % \makeatother
+
+
+%%%%% Appearance, font, ... %%%%%
+%Margin size%
+% \setlength{\headheight}{26pt}
+% \addtolength{\oddsidemargin}{-.275in}
+% \addtolength{\evensidemargin}{-.275in}
+% \addtolength{\textwidth}{0.7in}
+% \addtolength{\topmargin}{-.875in}   % White space from bottom
+% \addtolength{\bottommargin}{-.875in}   % White space from bottom
+% \addtolength{\textheight}{0.8in}
+\footskip = 20pt
+% \usepackage[top=2.cm,bottom=2.2cm,left=2cm,right=2cm]{geometry}
+\usepackage[top=1.5cm,bottom=2.0cm,left=1.2cm,right=1.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{lscape}
+\usepackage{pdfpages} % Add other pdfs into.
+\usepackage{xcolor}
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+\newlength\figureheight
+\newlength\figurewidth
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+
+%%%%% Hypperlinks %%%%%
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+	
+% %____________Newcommands__________________________________________________________
+% \newcommand{\equaltext}[2]{\ensuremath{\stackrel{\text{#1}}{=}}}
+
+%% Shorter commands
+\newcommand{\bb}{\mathbb}
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\cl}{\mathcal}
+\newcommand{\ol}{\overline}
+\newcommand{\fs}{\mathsf} % Sans serif
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+\newcommand{\st}{%
+  \ifmmode% math mode
+  \mathrm{s.\!t.}%
+  \else%
+  s.\!t.\@\xspace%
+  \fi%
+}
+\newcommand{\ie}{\emph{i.e.} }
+\newcommand{\eg}{\emph{e.g.}, }
+\newcommand{\etal}{\emph{et al.}}
+
+% Ensembles and sets
+\newcommand{\Rbb}{\bb{R}} % Real ensemble
+\newcommand{\Cbb}{\bb{C}} % Complex ensemble
+\newcommand{\Nbb}{\bb{N}} % Naturals ensemble
+\newcommand{\Zbb}{\bb{Z}} % Integers ensemble
+
+% Transformations
+\newcommand{\tinv}[1]{{\textstyle\frac{1}{#1}}}
+\newcommand{\inv}[1]{\frac{1}{#1}} % Inverse
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert} % absolute value
+\newcommand{\sign}{{\rm sign}} % sign
+\newcommand{\fft}[1]{\cl{F}\left\{#1\right\}} % Fourier transform
+\newcommand{\fftt}[1]{\cl{F}_{2}\left\{#1\right\}} % 2D Fourier transform
+\newcommand{\ifft}[1]{\cl{F}^{-1}\left\{#1\right\}} % Inverse Fourier transform
+\newcommand{\ifftt}[1]{\cl{F}_{2}^{-1}\left\{#1\right\}} % Inverse Fourier transform
+
+% Complex
+\newcommand{\im}{\mathrm{i}\mkern1mu} % Complex number i
+\newcommand{\real}[1]{\Re{\left\{#1\right\}}} % Real part
+\newcommand{\imag}[1]{\Im{\left\{#1\right\}}} % Imaginary part
+\newcommand{\conj}[1]{#1^{*}} % Conjuguate transpose
+
+% Proba - Stats
+\newcommand{\rv}{{\rm r.v.}\xspace}
+\newcommand{\Prob}{{\bb{P}}}
+\newcommand{\proba}[1]{\bb{P}\left[#1\right]}
+\newcommand{\pdf}{\varphi}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+% \newcommand{\E}[1]{\bb{E}\left[#1\right]} % Expectation
+\newcommand{\E}[2][]{\bb{E}_{#1}\left[#2\right]} % Expectation
+\newcommand{\expec}[1]{\mathop{{}\mathbb{E}}_{#1}} % for mathematical expectation
+\newcommand{\distiid}{\sim_{\iid}} % iid distributed
+\newcommand{\iid}{%
+  \ifmmode% math mode
+  \mathrm{i.i.d.}%
+  \else%
+  i.i.d.\@\xspace%
+  \fi%
+}
+
+% Others
+\newcommand{\limit}[2]{\underset{#1 \rightarrow #2}{\text{lim}}} % limit
+\newcommand{\ud}{\mathrm{d}} % Infinitesimal part for integration
+\newcommand{\supp}{{\rm supp}\,} % Support
+\DeclareMathOperator{\tr}{tr} % Trace
+\DeclareMathOperator{\diag}{diag}
+\newcommand{\transpose}[1]{#1^\top} % Transpose
+\newcommand{\modulo}[2]{{/#1/}_{#2}} % Modulo
+\newcommand{\norm}[2]{\left\lVert#1\right\rVert_{#2}} % p-norm
+% \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1} % Norm of something,
+\newcommand{\scp}[3][]{#1\langle #2, #3 #1\rangle} % Scalar product
+\newcommand{\fro}[2]{\langle #1, #2 \rangle_{\text{F}}} % Frobenius inner product
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\Id}{\mathds{1}}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\diam}{diam}
+\newcommand{\lpn}[3]{\ell_{#1,#2}^{#3}}
+
+% Commands specific to evaluation
+\newcommand{\soft}[1]{\cl T_{#1}}
+\newcommand{\ATA}{\bs A^\top \bs A}
+
+% %___________________________________________________________________________________
+
+\makeatletter
+\newcommand{\mathleft}{\@fleqntrue\@mathmargin0pt}
+\newcommand{\mathcenter}{\@fleqnfalse}
+% Defines a new command for the horizontal lines, change thickness here
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+
+%%%%%%%%%%%%%%%%%%%%%% Headers and footers %%%%%%%%%%%%%%%%%%%%%%%%%%
+\fancypagestyle{firstpage}{%
+    % \chead{\includegraphics[width=1\textwidth]{Telsiks2021-header.pdf}}
+    \lfoot{978-1-6654-4442-2/21/\$31.00~\copyright2021 IEEE} 
+    \renewcommand{\headrulewidth}{0pt}
+    \cfoot{\thepage}
+}
+
+\fancypagestyle{others}{%
+    \cfoot{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+\hoffset = 0cm % Decalage gauche-droite
+\voffset = 0.0cm % Decalage haut-bas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+%%%%%%%%%%%%%%% Make references colors %%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor = magenta
+}
+\usepackage{cleveref}
+\crefformat{equation}{(#2\color{blue}#1#3)} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Comments
+\newcommand{\LJc}[1]{\textcolor{blue}{\textbf{\scriptsize [LJ: #1]}}}
+\newcommand{\OLc}[1]{\textcolor{orange}{\textbf{\scriptsize [OL: #1]}}}
+\newcommand{\TODO}[1]{\textcolor{red}{\textbf{\scriptsize [TODO: #1]}}}
+\newcommand{\edt}[1]{{\color{blue} #1}}
+\newcommand{\del}[1]{{\color{red} \sout{#1}}}
+
+\newcommand{\br}[1]{\textcolor{red}{[\textbf{BR:#1}]}}
+\renewcommand{\br}[1]{}
+\newcommand{\rev}[1]{{ #1}}
+%\newcommand{\rev}[1]{{\color{blue} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% SPECIFIC COMMANDS
+
+\begin{document}
+
+\begin{center} % Center everything on the page
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.2cm]
+{ \huge \bfseries First-order methods in optimization - Evaluation }\\[0.1cm] % Title of your document
+\HRule \\[0.4cm]
+ 
+Olivier Leblanc, Guillaume Thiran. \\
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+% \vfill % Fill the rest of the page with whitespace
+% \
+
+% {\large \today ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Academic year 2019-2020}\\[1cm] % Date, change the \today to a set date if you want to be precise
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{1.tex}
+\input{2.tex}
+\input{3.tex}
+
+\end{document}

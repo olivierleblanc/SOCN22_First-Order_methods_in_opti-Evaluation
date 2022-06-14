@@ -1,0 +1,19 @@
+Interferometric_LE/.vscode/launch.json
+Interferometric_LE/.vscode/settings.json
+
+### Python
+__pycache__/
+
+### LaTeX
+*.blg
+*.bbl
+*.aux
+*.auxlock
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.synctex(busy)
+*.fdb_latexmk
+*.md5
+*.asv

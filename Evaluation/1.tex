@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Part 1 - Slide 45}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%
+\subsection{6. (with code)}
+%
+\begin{equation*}
+    f(\bs x) = 2 x_{[1]} + x_{[2]} 
+    = \max_{\bs y} \left\{ \sum_{i} y_i x_i; \sum_i y_i=3, 0 \le
+    y_i \le 2 \right\} = \sigma_{\{ \bs y|\bs 1^\top \bs y = 3, 
+    \bs 0 \le \bs y \le 2 \bs 1 \}}.
+\end{equation*}
+%
+Hence,
+%
+\begin{equation*}
+    \prox_f(\bs x) = \bs x - \cl P_{\{ \bs y|\bs 1^\top \bs y = 3, 
+    \bs 0 \le \bs y \le 2 \bs 1 \}} (\bs x).
+\end{equation*}
+%
+Writing $C=\{ \bs y|\bs 1^\top \bs y = 3, 
+\bs 0 \le \bs y \le 2 \bs 1 \}$, it can be compared with 
+$H_{\bs a, b} \bigcap \text{Box}[\bs l, \bs u]$, with 
+$\bs a=\bs 1, b=3, \bs l=\bs 0, \bs u = \bs 2$.
+%
+\begin{python}
+import numpy as np
+
+def f(x):
+    xsorted = np.sort(x)
+    return 2*xsorted[0] + xsorted[1]
+
+def projbox(x, l, u):
+    return np.minimum(np.maximum(x,l), u)
+
+def projH_inter_box(x, a, b, l, u):
+    mu = 1
+    factor = 1
+    val = 10
+
+    while (np.abs(val)>1e-8):
+        val = a@projbox(x-mu*a, l, u) - b
+        mu *= (1+factor)**(np.sign(val))
+        factor /= 1.2
+
+    return projbox(x-mu*a, l, u)
+
+def proxf(x):
+    return x - projH_inter_box(x, np.ones(len(x)), 3, np.zeros(len(x)), 2*np.ones(len(x)))  
+
+print(proxf(np.array([2,1,4,1,2,1])))
+\end{python}
+%
+The output is : $[1.49999994, 1., 2., 1., 1.49999994, 1.]$.
+%
+%%%%
+\subsection{8.}
+%
+\begin{equation*}
+    f(t) = \left\{
+        \begin{array}{ll}
+          1/t,~~t>0, \\
+            \infty,~~ \text{else}.
+        \end{array}
+      \right.
+\end{equation*}
+%
+\begin{equation*}
+    \prox_{\lambda f}(t) = \argmin_u \left\{
+        \begin{array}{ll}
+          1/{\lambda u},~~u>0, \\
+            \infty,~~ \text{else}.
+        \end{array}
+    \right. + \tinv 2 \norm{u-t}{2}^2 
+\end{equation*}
+%
+Hence,
+%
+\begin{equation*}
+    \frac{-1}{\lambda u^2} + u - t = 0 \Leftrightarrow 
+    u^3 - \lambda tu^2-\lambda=0.
+\end{equation*}
+%
+Finally,
+%
+\begin{equation}
+    \prox_{\lambda f}(t) = \{ u>0 | u^3 
+    - \lambda tu^2-\lambda=0  \}.
+\end{equation}
+%
+%%%%
+\subsection{9.}
+%
+\begin{equation*}
+    f(\bs X) = \left\{
+        \begin{array}{ll}
+          \tr \bs X^{-1},~~\bs X \succ 0, \\
+            \infty,~~ \text{else}.
+        \end{array}
+    \right.
+    = \left\{
+        \begin{array}{ll}
+        \sum_{i=1}^n \tinv{\lambda_i},~~\bs X \succ 0, \\
+            \infty,~~ \text{else}.
+        \end{array}
+    \right. 
+\end{equation*}
+%
+As $\bs X \in \bb S^n$, it is a \emph{spectral function}.
+Hence one can write $f(\bs X) = g(\lambda_1(\bs X), \cdots,
+\lambda_n(\bs X)) = \sum_{i=1}^n h(\lambda_i)$. 
+%
+With the Singular Value Decomposition (SVD) of $\bs X$ as 
+$\bs X = \bs U \diag{\lambda (\bs X)} \bs U^T$, this gives
+%
+\begin{align*}
+\begin{split}
+    \prox_{\lambda f} (\bs X) &= \bs U \diag(\prox_{\lambda g} 
+    [\lambda_1,\cdots, \lambda_n]) \bs U^\top \\
+    &= \bs U \diag(\prox_{\lambda h} (\lambda_1), \cdots,
+    \prox_{\lambda h} (\lambda_n)) \bs U^\top \\
+    &= \bs U \diag(\{ u>0| u^3-\lambda \lambda_i u^2-\lambda=0 \})
+    \bs U^\top.
+\end{split}
+\end{align*}
+%
+%%%%%
+\subsection{10.}
+%
+\begin{equation*}
+    \lambda f(\bs x) = \lambda (\norm{\bs x}{2}-1)^2 
+    = \lambda \norm{\bs x}{2}^2
+    - 2 \lambda \norm{\bs x}{2} + \lambda.
+\end{equation*}
+%
+Using the provided tables, one identifies it with 
+$g(\bs x) + \frac{c}{2} \norm{\bs x}{2}^2 + \scp{\bs a}{\bs x}
++ \gamma$, with $g(\bs x) = -2\lambda\norm{\bs x}{2}, c=2\lambda,
+\bs a=\bs 0, \gamma=0$.
+Hence,
+%
+\begin{equation*}
+    \prox_{\lambda f}(\bs x) = 
+    \prox_{\frac{-2\lambda\norm{\cdot}{2}}{1+2\lambda}}
+    \big(\frac{\bs x}{1+2\lambda} \big) = 
+    \left( 1+ \frac{2\lambda}{\norm{\bs x}{2}} 
+    \right) \frac{\bs x}{1+2\lambda},~~\bs x \neq \bs 0.
+\end{equation*}
