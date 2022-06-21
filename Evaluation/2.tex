@@ -1,24 +1,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Part 2 - Exercise 0 - p40}
+\section{Part 2 - Exercise 0 - slide 40}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \begin{equation*}
-    \min_{\bs x \in \Rbb^n}~\norm{\bs{Ax}-\bs b}{2}^2
+    \min_{\bs x \in \Rbb^n}~\tinv 2 \norm{\bs{Ax}-\bs b}{2}^2
     + \underbrace{\frac{\lambda_1}{2} \norm{\bs x}{2}^2 
-    + \lambda 2 \norm{\bs x}{1}}_{\text{elastic net}},
+    + \lambda_2 \norm{\bs x}{1}}_{\text{elastic net}},
 \end{equation*}
 %
 where $\bs A \in \Rbb^{m\times n}$, $\bs \in \Rbb^m$ and 
 $\lambda_1, \lambda_2>0$.
 %
-Choosing $f(\bs x) = \norm{\bs{Ax}-\bs b}{2}^2 
+Choosing $f(\bs x) = \tinv 2 \norm{\bs{Ax}-\bs b}{2}^2 
 + \frac{\lambda_1}{2} \norm{\bs x}{2}^2$ as the $\sigma$-strongly 
 convex and differentiable part and 
 $g(\bs x) = \lambda_2 \norm{\bs x}{1}$ as the closed 
 convex but non differentiable part, one has 
 $\nabla f(\bs x) = \bs A^\top (\bs{Ax}-\bs b) + \lambda_1 
-\bs{Ix}$ and $\prox_{\lambda g}(\bs x) = 
-\soft{\lambda_2}(\bs x)$.
+\bs{Ix}$ and $\prox_{\alpha g}(\bs x) = 
+\soft{\alpha\lambda_2}(\bs x)$.
 %
 \begin{itemize}
     \item (\emph{Proximal Gradient})
@@ -67,10 +67,11 @@ $\nabla f(\bs x) = \bs A^\top (\bs{Ax}-\bs b) + \lambda_1
     \end{split}
     \end{align*}
     %
-    with $\kappa=L/\sigma$, and $\sigma=1$.
+    with $\kappa=L/\sigma$, and $\sigma=\lambda_{\min} (\bs A^\top \bs A)
+    + \lambda_1 = \lambda_1$ if $\bs A$ is not full rank.
 \end{itemize}
 %
-Now, if one chooses $f(\bs x) = \norm{\bs{Ax}-\bs b}{2}^2$ 
+Now, if one chooses $f(\bs x) = \tinv 2 \norm{\bs{Ax}-\bs b}{2}^2$ 
 as the differentiable (but not strongly convex) part and 
 $\alpha g(\bs x) = \frac{\alpha\lambda_1}{2} \norm{\bs x}{2}^2 
 + \alpha\lambda_2 \norm{\bs x}{1}$ as the closed 
@@ -94,8 +95,12 @@ $\prox_{\alpha g}(\bs x) =
         \begin{array}{ll}
             \bs x^{k+1} &= \soft{\frac{\lambda_2/L_2}{
             \lambda_1/L_2 + 1}} 
-            \left( \bs y^k - \tinv{L_2} (\ATA) 
-            \bs y^k + \tinv L \bs A^\top\bs b \right) \\
+            \left( \frac{\bs y^k - \tinv{L_2} (\bs A^\top 
+            \bs y^k-\bs b) }{\frac{\lambda_1}{L_2}+1} \right)
+            = \soft{\frac{\lambda_2}{
+                \lambda_1 + L_2}} 
+                \left( \frac{L_2\bs y^k - (\bs A^\top 
+                \bs y^k-\bs b) }{\lambda_1+L_2} \right) \\
             \bs y^{k+1} &= \bs x^{k+1} + \left( 
             \frac{\sqrt{\kappa_2}-1}{\sqrt{\kappa_2}+1} 
             \right) (\bs x^{k+1}- \bs x^k),
@@ -105,7 +110,7 @@ $\prox_{\alpha g}(\bs x) =
     \end{align*}
     %
     with $L_2=\norm{\bs A}{2}^2$, $\kappa_2=L_2/\sigma$, 
-    and $\sigma=1$.
+    and $\sigma=\lambda_1$.
 \end{itemize}
 %
 One notices the only difference between \emph{V-FISTA} and 
@@ -126,10 +131,10 @@ methods worked the best, with a slight improvement in
 V-FISTA which does not follow the theory.
 The four first elements are:
 \begin{itemize}
-    \item (-0.40403765  0.18475212  0.97264407 -0.99645397)
+    \item (-0.40403765  0.18475212  0.97264407 -0.99645397])
     \item (-0.43969331  0.01974521  1.42280231 -0.87819581)
     \item (-0.4319773   0.02881602  1.43373682 -0.9066518 )
-    \item (-0.43207117  0.02954933  1.43438138 -0.9058778 )
+    \item (-0.43210834  0.0295975   1.43437285 -0.90583213 )
     \item (-0.43210892  0.02959727  1.43437048 -0.9058291 )
 \end{itemize}
 %

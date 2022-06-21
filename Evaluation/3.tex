@@ -1,9 +1,70 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Part 2 - Exercise 1 - p41}
+\section{Part 2 - Exercise 1 - slide 41}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \begin{equation*}
     \min_{\bs x \in \Rbb^{30}} \sqrt{\bs x^\top \bs{Qx} + 
-    2 \bs b^\top \bs x + c} + 0.2 \norm{\bs{Dx}}{1}
+    2 \bs b^\top \bs x + c} + 0.2 \norm{\bs{Dx+\bs 1}}{1},
 \end{equation*}
 %
+where $\bs Q \in \Rbb^{30\times 30}$, $\bs b\in \Rbb^{30}$, $c\in \Rbb$, $\bs D
+\in \Rbb^{10\times 30}$. The matrix $\bs Q$ is positive definite. \\
+%
+One has $f(\bs x) = \sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}$ and $g(\bs x) =  0.2 \norm{\bs{Dx+\bs 1}}{1}$. \\
+Hence, $\nabla f(\bs x) = \frac{\bs{Qx}+\bs b}{\sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}}$ and $\prox_{\alpha g}(\bs x) = \bs x + \bs D^\top \left( 
+\soft{0.2\alpha} (\bs{Dx}+\bs 1) - \bs{Dx} - \bs 1 \right)$.
+%
+\\
+\indent (a) \TODO{Write in matrix format with Schur complement.} \\
+%
+\indent (b) \TODO{Use Cholesky factorization and prove it is a norm.} \\
+%
+\indent (c) 
+\begin{itemize}
+    \item (\emph{Proximal gradient}):
+    \begin{align*}
+    \begin{split}
+        \bs x^{k+1} &= \prox_{\tinv{L_f}g} (\bs x^k - \tinv{L_f} \nabla f(\bs x^k)) \\ 
+        &= \bs x^k - \tinv{L_f} \nabla f(\bs x^k) + \bs D^\top 
+        \left( \soft{\frac{0.2}{L_f}} \left[ \bs D(\bs x^k - \tinv{L_f} \nabla 
+        f(\bs x^k) ) + \bs 1 \right] - \bs D(\bs x^k - \tinv{L_f} \nabla 
+        f(\bs x^k) ) - \bs 1   \right) \\
+        &\underset{(*)}{=} \bs D^\top \left( \soft{\frac{0.2}{L_f}} \left[ 
+        \bs D(\bs x^k - \tinv{L_f} \nabla f(\bs x^k) ) + \bs 1 \right] - \bs 1 
+        \right) \\
+        &= \bs D^\top \left( \soft{\frac{0.2}{L_f}} \left[ 
+        \bs D(\bs x^k - \tinv{L_f} \frac{\bs{Qx}^k+\bs b}{\sqrt{(\bs x^k)^\top 
+        \bs{Qx}^k + 2 \bs b^\top \bs x^k + c}} ) + \bs 1 \right] - \bs 1 
+        \right)
+    \end{split}
+    \end{align*}
+    %
+    (*) If $\bs D^\top \bs D=\bs I$ (true for the provided data in the numerical 
+    example).
+    %
+    \item (\emph{FISTA}): \TODO{}
+\end{itemize}
+%
+\TODO{Lipschitz constant analytical solution.}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Part 2 - Exercise 3 - slides 71-72}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+Given a set of data points $\bs x_1, \bs x_2,\cdots,\bs x_n \in \Rbb^d$ and 
+corresponding labels $y_1,y_2,\cdots,y_n$. The soft margin SVM problem is given 
+by 
+\begin{equation*}
+    \min \left\{\tinv 2\norm{\bs w}{2}^2+C \sum_{i=1}^{n} \max 
+    \left\{0,1-y_i \bs w^\top \bs x_i\right\}\right\}
+\end{equation*}
+%
+\indent (a) \\
+%
+\\
+\indent (b) \\
+
+
+
