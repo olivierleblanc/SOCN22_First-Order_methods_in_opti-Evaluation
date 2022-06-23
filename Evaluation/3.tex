@@ -8,46 +8,100 @@
 \end{equation*}
 %
 where $\bs Q \in \Rbb^{30\times 30}$, $\bs b\in \Rbb^{30}$, $c\in \Rbb$, $\bs D
-\in \Rbb^{10\times 30}$. The matrix $\bs Q$ is positive definite. \\
+\in \Rbb^{30\times 30}$. The matrix $\bs Q$ is positive definite. \\
+
+\indent (a) The first step of the problem is to show it is well-defined (i.e. $\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c\geq 0$ if $c> \bs b^\top\bs Q^{-1} \bs b$.). To that aim, letting the Cholesky factorisation of $\bs Q$ being denoted as $\bs Q = \bs L^\top \bs L$, 
+\begin{align*}
+	\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c &= \bs x^\top \bs{Qx} + \bs b^\top \bs L^{-1} \bs{Lx} + \bs x^\top \bs L^\top \bs L^{-\top} \bs b + \bs b^{\top} \bs L^{-1} \bs L^{-\top} \bs b - \bs b^\top \bs L^\top \bs L^{-\top} \bs b + c,\\
+&= \left \| \bs{Lx} + \bs L^{-\top} \bs b \right \|_2^2 + c -\bs b^\top\bs Q^{-1} \bs b. 
+\end{align*}  
+From the above, as a norm is always nonnegative, one can conclude the problem is well-defined if $c> \bs b^\top\bs Q^{-1} \bs b$.   \\
 %
-One has $f(\bs x) = \sqrt{\bs x^\top \bs{Qx} + 
-2 \bs b^\top \bs x + c}$ and $g(\bs x) =  0.2 \norm{\bs{Dx+\bs 1}}{1}$. \\
-Hence, $\nabla f(\bs x) = \frac{\bs{Qx}+\bs b}{\sqrt{\bs x^\top \bs{Qx} + 
-2 \bs b^\top \bs x + c}}$ and $\prox_{\alpha g}(\bs x) = \bs x + \bs D^\top \left( 
-\soft{0.2\alpha} (\bs{Dx}+\bs 1) - \bs{Dx} - \bs 1 \right)$.
-%
-\\
-\indent (a) \TODO{Write in matrix format with Schur complement.} \\
-%
-\indent (b) \TODO{Use Cholesky factorization and prove it is a norm.} \\
-%
-\indent (c) 
+\indent (b) Starting from the norm expression, one can obtain 
+\begin{align*}
+	\sqrt{\bs x^\top \bs{Qx} + 
+    2 \bs b^\top \bs x + c} + 0.2 \norm{\bs{Dx+\bs 1}}{1} &= \left \| \begin{matrix}
+    \bs{Lx} + \bs L^{-\top} \bs b \\
+    \sqrt{c -\bs b^\top\bs Q^{-1} \bs b}
+    \end{matrix} \right \|_2 + 0.2 \norm{\bs{Dx+\bs 1}}{1}. 
+\end{align*}
+As a norm is convex, as a composition with a  linear mapping preserves convexity and since a sum of convex functions is convex, the problem is convex. \\
+\indent (c) To fit the framework of FISTA,  we denote by $f(\bs x) = \sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}$ and $g(\bs x) =  0.2 \norm{\bs{Dx+\bs 1}}{1}$ where $g$ is proper, closed and convex, and $f$ is $L_f$-smooth and convex. More precisely, the Lipschitz constant of $f$ can be identify by computing its Hessian: 
+\begin{align*}
+\bs \nabla f(\bs x) & = \frac{\bs{Qx}+\bs b}{\sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}}, \\
+\bs \nabla^2 f(\bs x) & = \frac{\bs Q}{\sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}} - \frac{(\bs{Qx}+\bs b)(\bs{Qx}+\bs b)^\top}{\left(\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c\right)^{\frac{3}{2}}}. 
+\end{align*}
+The latter can be bounded as 
+\begin{align*}
+	\bs \nabla^2 f(\bs x) \preceq  \frac{\bs Q }{\sqrt{\bs x^\top \bs{Qx} + 
+2 \bs b^\top \bs x + c}} = \frac{\bs Q }{ \sqrt{c -\bs b^\top\bs Q^{-1} \bs b} \sqrt{1+\frac{\left \| \bs{Lx} + \bs L^{-\top} \bs b \right \|_2^2}{ c -\bs b^\top\bs Q^{-1} \bs b}}} \preceq \frac{\bs Q }{ \sqrt{c -\bs b^\top\bs Q^{-1} \bs b}},
+\end{align*}
+leading to $L_f = \frac{\lambda_{\text{max}}\left(\bs Q\right)}{\sqrt{c -\bs b^\top\bs Q^{-1} \bs b}}$. In the case of the exercise, we obtain $L_f = 53.54$ and thus a step size of  $0.019$. \\
+As $\bs D \bs D^\top = \bs I$, one can compute the proximal operator of $\alpha g$ as 
+\begin{align*}
+	\prox_{\alpha g}(\bs x) & = \bs x + \bs D^\top \left( 
+\soft{0.2\alpha} (\bs{Dx}+\bs 1) - \bs{Dx} - \bs 1 \right),\\
+ & =  \bs D^\top 
+\soft{0.2\alpha} (\bs{Dx}+\bs 1) -\bs D^\top \bs 1 .
+\end{align*}
+This leads to 
 \begin{itemize}
     \item (\emph{Proximal gradient}):
     \begin{align*}
     \begin{split}
         \bs x^{k+1} &= \prox_{\tinv{L_f}g} (\bs x^k - \tinv{L_f} \nabla f(\bs x^k)) \\ 
-        &= \bs x^k - \tinv{L_f} \nabla f(\bs x^k) + \bs D^\top 
-        \left( \soft{\frac{0.2}{L_f}} \left[ \bs D(\bs x^k - \tinv{L_f} \nabla 
-        f(\bs x^k) ) + \bs 1 \right] - \bs D(\bs x^k - \tinv{L_f} \nabla 
-        f(\bs x^k) ) - \bs 1   \right) \\
-        &\underset{(*)}{=} \bs D^\top \left( \soft{\frac{0.2}{L_f}} \left[ 
-        \bs D(\bs x^k - \tinv{L_f} \nabla f(\bs x^k) ) + \bs 1 \right] - \bs 1 
-        \right) \\
-        &= \bs D^\top \left( \soft{\frac{0.2}{L_f}} \left[ 
+        &=  \bs D^\top 
+       \soft{\frac{0.2}{L_f}} \left[ \bs D(\bs x^k - \tinv{L_f} \nabla 
+        f(\bs x^k) ) + \bs 1 \right]  - \bs D^\top  \bs 1    \\
+        &= \bs D^\top  \soft{\frac{0.2}{L_f}} \left[ 
         \bs D(\bs x^k - \tinv{L_f} \frac{\bs{Qx}^k+\bs b}{\sqrt{(\bs x^k)^\top 
-        \bs{Qx}^k + 2 \bs b^\top \bs x^k + c}} ) + \bs 1 \right] - \bs 1 
-        \right)
+        \bs{Qx}^k + 2 \bs b^\top \bs x^k + c}} ) + \bs 1 \right] - \bs D^\top \bs 1 .
     \end{split}
     \end{align*}
-    %
-    (*) If $\bs D^\top \bs D=\bs I$ (true for the provided data in the numerical 
-    example).
-    %
-    \item (\emph{FISTA}): \TODO{}
+    
+    \item (\emph{FISTA}):
+      \begin{align*}
+    \begin{split}
+    \left\{
+    \begin{array}{lll}
+        \bs x^{k+1} &= \bs D^\top  \soft{\frac{0.2}{L_f}} \left[ 
+        \bs D(\bs y^k - \tinv{L_f} \frac{\bs{Qy}^k+\bs b}{\sqrt{(\bs y^k)^\top 
+        \bs{Qy}^k + 2 \bs b^\top \bs y^k + c}} ) + \bs 1 \right] - \bs D^\top \bs 1 \\
+        t_{k+1} &= \frac{1+\sqrt{1+4t_k^2}}{2} \\
+        \bs y^{k+1} &= \bs x^{k+1} + \left( 
+        \frac{t_k-1}{t_{k+1}} \right) (\bs x^{k+1}- \bs x^k)
+    \end{array}
+    \right.
+    \end{split}
+    \end{align*}
 \end{itemize}
-%
-\TODO{Lipschitz constant analytical solution.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{images/part2_ex1.pdf}
+    \caption{$F(\bs x^k)-F_{\text{opt}}$ in log-scale along the 
+  y-axis for the first 1001 iterations of each of the methods 
+  with all-zeros vectors and a constant stepsize. The optimal solution has been computed as the best one across 10000 iterations.  }
+  \label{fig: ex0}
+\end{figure}
+       Vector found by PG: 
+       \begin{align*}
+       \bs x^{*,\text{PG}} &= [0.406, -0.093, -0.093, -0.874, -1.025, -0.044,  0.521, -1.16 ,
+        0.877,  0.129, -0.242,  1.664,  1.32 , -0.561, -0.079, -1.764,\\& \qquad 
+       -1.351, -0.387, -1.158,  0.844,  0.43 , -0.715, -0.349, -0.037,
+        1.408, -0.971,  1.206,  0.795,  0.568,  1.284].
+       \end{align*}
+       Vector found by FISTA: 
+\begin{align*}\bs x^{*,\text{FISTA}} &= [-0.455, -0.389,  0.291, -1.149, -1.309, -0.43 ,  0.667, -1.434,
+        1.082, -0.019, -0.416,  1.732,  1.293, -0.541, -0.143,\\& \qquad  -1.704,
+       -1.396, -0.742, -1.539,  0.335, -0.218, -0.662, -0.151, -0.085,
+        1.801, -0.566,  1.321,  0.849,  0.701,  1.091].\end{align*}
+
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Part 2 - Exercise 3 - slides 71-72}

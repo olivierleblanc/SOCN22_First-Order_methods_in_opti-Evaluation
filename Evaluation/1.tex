@@ -26,43 +26,35 @@ $\bs a=\bs 1, b=3, \bs l=\bs 0, \bs u = \bs 2$.
 %
 \begin{python}
 import numpy as np
-
 def error_fct(a,b,l,u,x,mu):
     y = projbox(x-mu*a,l,u)
-    error = a@y-b
-    return error
-
+    return error = a@y-b
+     
 def projbox(x, l, u):
     return np.minimum(np.maximum(x,l), u)
 
-#projection on the intersection of an hyperplane and a box
 def proj_H_inter_box(a,b,l,u,x):
-    #start with guesses for mu-levels
-    mu_low = -1
+    mu_low = -1 #start with guesses for mu-levels
     mu_high = 1
-
     #check that the levels give respectively negative and positive values
     #for the function error = a@y-1 with y = proj_box(l,u,x-mu*a)
-
-    #positive for low bound
+    #positive for lower bound
     j=0
     j_max =100
     error_l = -1
     while (error_l<0) & (j<j_max) :
-        mu_low = mu_low*2 #more negative (always done in first iteration but not important)
+        mu_low = mu_low*2 #more negative
         error_l=error_fct(a,b,l,u,x,mu_low)
         j=j+1
-
-    #negative for low bound
+    #negative for upper bound
     k=0
     k_max =10
     error_h = 1
     while (error_h>0) & (k<k_max) :
-        mu_high = mu_high*2 #more negative (always done in first iteration but not important)
+        mu_high = mu_high*2 #more positive 
         error_h=error_fct(a,b,l,u,x,mu_high)
         k=k+1
 
-    #mu_low lead to positive value of the error,
     i = 0
     i_max = 100
     tol = 1e-8
@@ -70,23 +62,19 @@ def proj_H_inter_box(a,b,l,u,x):
     while (np.abs(error)>tol) & (i<i_max) :
         mu_mid = (mu_low+mu_high)/2
         error = error_fct(a,b,l,u,x,mu_mid)
-
         if error>0:
             mu_low = mu_mid
         else:
             mu_high = mu_mid
-
         i=i+1
 
     #Compute the solution with the good level
-    y= projbox(x-mu_mid*a,l,u)
-    return y
+    return projbox(x-mu_mid*a,l,u)
 
 def proxf(x):
     return x - proj_H_inter_box(np.ones(len(x)),3,np.zeros(len(x)),2*np.ones(len(x)),x)
 
 x = np.array([2,1,4,1,2,1])
-
 print(proxf(x))
 \end{python}
 %
@@ -113,14 +101,13 @@ The output is : $[1.5, 1., 2.,  1.,  1.5, 1. ]$.
     \right. + \tinv 2 \norm{u-t}{2}^2 
 \end{equation*}
 %
-Hence,
+Clearly, the minimum occurs when $u>0$, i.e. on the differentiable part. Hence,
 %
 \begin{equation*}
     \frac{-\lambda}{u^2} + u - t = 0 \Leftrightarrow 
-    u^3 - tu^2-\lambda=0.
+    u^3 - tu^2-\lambda=0,
 \end{equation*}
-%
-Finally,
+and it can be checked the second derivative is always positive on $u>0$, implying it exists a unique solution of the above and it corresponds to a minimum. Finally,
 %
 \begin{equation}
     \prox_{\lambda f}(t) = \{ u>0 | u^3 
@@ -145,11 +132,10 @@ Finally,
     \right. 
 \end{equation*}
 %
-As $\bs X \in \bb S^n$, it is a \emph{spectral function}.
-Hence one can write $f(\bs X) = g(\lambda_1(\bs X), \cdots,
-\lambda_n(\bs X)) = \sum_{i=1}^n h(\lambda_i)$. 
+As one can write $f(\bs X) = g(\lambda_1(\bs X), \cdots,
+\lambda_n(\bs X)) = \sum_{i=1}^n h(\lambda_i)$, $f$ is a \emph{symmetric spectral function}.
 %
-With the Singular Value Decomposition (SVD) of $\bs X$ as 
+With the EigenValue Decomposition (EVD) of $\bs X$ as 
 $\bs X = \bs U \diag{\lambda (\bs X)} \bs U^T$, this gives
 %
 \begin{align*}
@@ -158,10 +144,11 @@ $\bs X = \bs U \diag{\lambda (\bs X)} \bs U^T$, this gives
     [\lambda_1,\cdots, \lambda_n]) \bs U^\top \\
     &= \bs U \diag(\prox_{\lambda h} (\lambda_1), \cdots,
     \prox_{\lambda h} (\lambda_n)) \bs U^\top \\
-    &= \bs U \diag(\{ u>0| u^3-\lambda_i u^2-\lambda=0 \})
-    \bs U^\top.
+    &= \bs U \diag(\{\{ u>0| u^3-\lambda_i u^2-\lambda=0 \}\}_{i=1}^n)
+    \bs U^\top,
 \end{split}
 \end{align*}
+with $h(t)=\frac{1}{t}$ for $t>0$. 
 %
 %%%%%
 \subsection{10.}

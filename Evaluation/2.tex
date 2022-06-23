@@ -8,7 +8,7 @@
     + \lambda_2 \norm{\bs x}{1}}_{\text{elastic net}},
 \end{equation*}
 %
-where $\bs A \in \Rbb^{m\times n}$, $\bs \in \Rbb^m$ and 
+where $\bs A \in \Rbb^{m\times n}$, $\bs b \in \Rbb^m$ and 
 $\lambda_1, \lambda_2>0$.
 %
 Choosing $f(\bs x) = \tinv 2 \norm{\bs{Ax}-\bs b}{2}^2 
@@ -17,7 +17,7 @@ convex and differentiable part and
 $g(\bs x) = \lambda_2 \norm{\bs x}{1}$ as the closed 
 convex but non differentiable part, one has 
 $\nabla f(\bs x) = \bs A^\top (\bs{Ax}-\bs b) + \lambda_1 
-\bs{Ix}$ and $\prox_{\alpha g}(\bs x) = 
+\bs{x}$ and $\prox_{\alpha g}(\bs x) = 
 \soft{\alpha\lambda_2}(\bs x)$.
 %
 \begin{itemize}
@@ -95,11 +95,11 @@ $\prox_{\alpha g}(\bs x) =
         \begin{array}{ll}
             \bs x^{k+1} &= \soft{\frac{\lambda_2/L_2}{
             \lambda_1/L_2 + 1}} 
-            \left( \frac{\bs y^k - \tinv{L_2} (\bs A^\top 
+            \left( \frac{\bs y^k - \tinv{L_2} \bs A^\top  (\bs A
             \bs y^k-\bs b) }{\frac{\lambda_1}{L_2}+1} \right)
             = \soft{\frac{\lambda_2}{
                 \lambda_1 + L_2}} 
-                \left( \frac{L_2\bs y^k - (\bs A^\top 
+                \left( \frac{L_2\bs y^k - \bs A^\top  (\bs A
                 \bs y^k-\bs b) }{\lambda_1+L_2} \right) \\
             \bs y^{k+1} &= \bs x^{k+1} + \left( 
             \frac{\sqrt{\kappa_2}-1}{\sqrt{\kappa_2}+1} 
@@ -110,13 +110,9 @@ $\prox_{\alpha g}(\bs x) =
     \end{align*}
     %
     with $L_2=\norm{\bs A}{2}^2$, $\kappa_2=L_2/\sigma$, 
-    and $\sigma=\lambda_1$.
+    and $\sigma=\lambda_1$ (given by the statement).
 \end{itemize}
-%
-One notices the only difference between \emph{V-FISTA} and 
-\emph{V-FISTA2} occurs in the second line, with $\kappa_2
-\neq \kappa$.
-%
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{images/part2_ex0.pdf}
