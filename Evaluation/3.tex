@@ -81,26 +81,34 @@ This leads to
     \end{split}
     \end{align*}
 \end{itemize}
+Implementing both methods, their objective values along the iterations are displayed in \Cref{fig:ex1}. To get a more precise view, their objective values at iterations $1$, $101$, ..., $1001$ are the following:
+\begin{align*}
+	F\left(\bs x^{k,\text{PG}}\right)&= [55.543, 46.768, 45.150 , 44.398, 44.116, 44.007, 43.940 , 43.894,
+       43.862, 43.840 , 43.826],\\
+       F\left(\bs x^{k,\text{FISTA}}\right)&= [55.543, 43.811, 43.772, 43.771, 43.770 , 43.770 , 43.770 , 43.770 ,
+       43.770 , 43.770 , 43.770 ]  .     
+\end{align*}
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{images/part2_ex1.pdf}
     \caption{$F(\bs x^k)-F_{\text{opt}}$ in log-scale along the 
   y-axis for the first 1001 iterations of each of the methods 
   with all-zeros vectors and a constant stepsize. The optimal solution has been computed as the best one across 10000 iterations.  }
-  \label{fig: ex0}
+  \label{fig:ex1}
 \end{figure}
-       Vector found by PG: 
+Finally, the vectors found by both methods after $1001$ iterations are the following:
        \begin{align*}
        \bs x^{*,\text{PG}} &= [0.406, -0.093, -0.093, -0.874, -1.025, -0.044,  0.521, -1.16 ,
         0.877,  0.129, -0.242,  1.664,  1.32 , -0.561, -0.079, -1.764,\\& \qquad 
        -1.351, -0.387, -1.158,  0.844,  0.43 , -0.715, -0.349, -0.037,
-        1.408, -0.971,  1.206,  0.795,  0.568,  1.284].
-       \end{align*}
-       Vector found by FISTA: 
-\begin{align*}\bs x^{*,\text{FISTA}} &= [-0.455, -0.389,  0.291, -1.149, -1.309, -0.43 ,  0.667, -1.434,
+        1.408, -0.971,  1.206,  0.795,  0.568,  1.284],\\
+        \bs x^{*,\text{FISTA}} &= [-0.455, -0.389,  0.291, -1.149, -1.309, -0.43 ,  0.667, -1.434,
         1.082, -0.019, -0.416,  1.732,  1.293, -0.541, -0.143,\\& \qquad  -1.704,
        -1.396, -0.742, -1.539,  0.335, -0.218, -0.662, -0.151, -0.085,
-        1.801, -0.566,  1.321,  0.849,  0.701,  1.091].\end{align*}
+        1.801, -0.566,  1.321,  0.849,  0.701,  1.091].
+       \end{align*}
+        
+
 
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,11 +122,69 @@ by
     \min \left\{\tinv 2\norm{\bs w}{2}^2+C \sum_{i=1}^{n} \max 
     \left\{0,1-y_i \bs w^\top \bs x_i\right\}\right\}
 \end{equation*}
-%
-\indent (a) \\
-%
-\\
-\indent (b) \\
 
+\indent (a) Letting $f(\bs w) = \tinv 2\norm{\bs w}{2}^2$, $g(\bs z) = C\sum_{i=1}^n\max\left(0,1-z_i\right)$, and $\bs A = \begin{bmatrix}
+	\bs x_1y_1\\ \vdots \\ \bs x_ny_n
+\end{bmatrix}$, the problem matches the canonical form 
+\begin{align*}
+	\min f(\bs w) + g(\bs{Aw}),
+\end{align*}
+with $f$ proper closed and $\sigma$-strongly convex (here $\sigma=1$), $g$ proper closed and convex. Hence, the Dual Proximal Gradient (DPG) or the Fast DPG (FDPG) methods can be applied. To that aim,
+the following optimisation problem must be solved. 
+\begin{align*}
+	\underset{\bs w}{\text{argmax}} \left\{\left \langle \bs w, \bs A^\top \bs y \right \rangle - f(\bs w)\right\} &= \underset{\bs w}{\text{argmax}} \left\{\left \langle \bs w, \bs A^\top \bs y \right \rangle - \tinv 2\norm{\bs w}{2}^2 \right\} = \bs A^\top \bs y. 
+\end{align*}
+Also, we compute the proximal operator of $\eta g$ as 
+\begin{align*}
+	\text{prox}_{\kappa \max(0,1-x)}(x) &= 1-\text{prox}_{\kappa \max(0,x)}(1-x),\\
+	&= 1-\text{prox}_{\kappa \sigma_{[0;1]}}(1-x),\\
+	&= x+\min\left\{\max\left\{1-x,0\right\},\kappa\right\}.
+\end{align*}
+This leads to the compact formulation 
+\begin{align*}
+	\text{prox}_{\eta g}(\bs w)= \bs w+\min\left\{\max\left\{1-\bs w,0\right\},\eta C\right\}.
+\end{align*}
+Plugging these expressions into the DPG and FDPG  iterations, one obtains 
+\begin{itemize}
+    \item (\emph{DPG}):
+    \begin{align*}
+    \begin{split}
+    \left\{
+    \begin{array}{ll}
+   & \bs x^{k} = \bs A^\top \bs y^k\\
+        &\bs y^{k+1} = \min\left\{\max\left\{\bs y^k-\tinv L\bs A \bs x^k + \tinv L,0\right\}, C\right\}. \end{array}
+   \right. \end{split}
+    \end{align*}
+    
+    \item (\emph{FDPG}):
+      \begin{align*}
+    \begin{split}
+    \left\{
+    \begin{array}{ll}
+         \bs u^{k} &= \bs A^\top \bs w^k\\
+        \bs y^{k+1} &= \min\left\{\max\left\{\bs w^k-\tinv L\bs A \bs u^k + \tinv L,0\right\}, C\right\}\\
+        t_{k+1} &= \frac{1+\sqrt{1+4t_k^2}}{2} \\
+        \bs w^{k+1} &= \bs y^{k+1} + \left( 
+        \frac{t_k-1}{t_{k+1}} \right) (\bs y^{k+1}- \bs y^k)
+    \end{array}
+    \right.
+    \end{split}
+    \end{align*}
+    and with  $\bs x^k = \bs A^\top \bs y^k$.
+\end{itemize}
+%
+
+\indent (b) Both methods have been implemented. As it was not given in the exercise, we have assumed $C=1$. Also, the class information (originally equal to $1$ or $2$) has been transformed in to $-1$ and $1$ as this is the setup of usual SVM. Finally, comparing the problem formulation with SVM, we have concluded the obtained hyperplane was assumed to go through the origin. This leads to the results displayed in \Cref{fig:ex3}, were one can observe two points are actually classified incorrectly. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{images/part2_ex3.pdf}
+    \caption{Separating hyperplanes obtained by both methods.   }
+  \label{fig:ex3}
+\end{figure}
+More precisely, the vectors obtained by both methods after $40$ iterations are the following. 
+       \begin{align*}
+       \bs x^{*,\text{DPG}} &= [-2.040, 0.913],\\
+        \bs x^{*,\text{FDPG}} &= [-2.124,1.012].
+       \end{align*}
 
 
