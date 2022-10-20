@@ -1,6 +1,8 @@
 Interferometric_LE/.vscode/launch.json
 Interferometric_LE/.vscode/settings.json
 
+slides/
+
 ### Python
 __pycache__/
 
